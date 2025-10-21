@@ -1,199 +1,205 @@
-"""
-网络安全技术大作业 - 主程序
-整合哈夫曼编码、RSA加密、中间人攻击和时间攻击的演示
-"""
-
 import sys
 import time
 
 
 def print_header(title: str):
-    """打印格式化的标题"""
-    print("\n" + "="*80)
     print(title.center(80))
-    print("="*80)
 
 
 def print_menu():
-    """打印主菜单"""
-    print_header("网络安全技术演示系统")
+    print_header("Network Security Technology Demonstration System")
     print("""
-请选择要演示的内容:
+Select what you want to demonstrate:
 
-1. 哈夫曼编码演示
-   - 展示数据压缩原理
-   - 编码和解码过程
+1. Huffman Coding demonstration
+   - Demonstrate the principles of data compression
+   - Encoding and decoding process
 
-2. RSA加密演示
-   - 密钥生成
-   - 加密和解密过程
+2. RSA encryption demonstration
+   - Key generation
+   - Encryption and decryption processes
 
-3. 安全通信系统演示
-   - 结合哈夫曼编码和RSA加密
-   - 完整的端到端加密通信
+3. Secure communication system demonstration
+   - Combining Huffman coding and RSA encryption
+   - Full end-to-end encrypted communication
 
-4. 中间人攻击演示
-   - 场景1: 失败的攻击（正确的密钥交换）
-   - 场景2: 成功的攻击（攻击者控制密钥交换）
-   - 防御方法
+4. Man-in-the-middle attack demonstration
+   - Scenario 1: Failed attack (correct key exchange)
+   - Scenario 2: Successful attack (attacker controls key exchange)
+   - Defense methods
 
-5. 时间攻击演示
-   - 时间攻击原理
-   - 对易受攻击实现的攻击
-   - 安全实现对比
-   - 防御方法
+5. Timing attack demonstration
+   - Timing attack principle
+   - Attacks on vulnerable implementations
+   - Security implementation comparison
+   - Defense methods
 
-6. 完整演示（运行所有模块）
+6. Full demo (running all modules)
 
-0. 退出
+0. Exit
 
 """)
 
 
 def demo_huffman():
-    """哈夫曼编码演示"""
-    print_header("哈夫曼编码演示")
+    """Huffman coding demonstration"""
+    print_header("Huffman Coding Demonstration")
     
     try:
         from huffman import HuffmanCoding
         
         huffman = HuffmanCoding()
-        text = "hello world! this is a demonstration of huffman coding for data compression."
         
-        print(f"\n原始文本: {text}")
-        print(f"原始大小: {len(text)} 字符 ({len(text) * 8} 比特)")
+        # Get user input
+        print("\nPlease enter text to compress (supports Chinese and English):")
+        text = input("> ").strip()
         
-        # 编码
+        if not text:
+            text = "hello world! this is a demonstration of huffman coding for data compression."
+            print(f"Using default text: {text}")
+        
+        print(f"\nOriginal text: {text}")
+        print(f"Original size: {len(text)} characters ({len(text.encode('utf-8')) * 8} bits)")
+        
+        # Encode
         encoded, codes = huffman.encode(text)
-        print(f"\n编码后大小: {len(encoded)} 比特")
-        print(f"压缩率: {huffman.get_compression_ratio(text, encoded):.2f}%")
+        print(f"\nEncoded size: {len(encoded)} bits")
+        print(f"Compression ratio: {huffman.get_compression_ratio(text, encoded):.2f}%")
         
-        # 显示部分编码表
-        print("\n部分哈夫曼编码表:")
+        # Display partial encoding table
+        print("\nPartial Huffman encoding table:")
         print("-" * 40)
         for i, (char, code) in enumerate(sorted(codes.items())[:10]):
             print(f"'{char}': {code}")
         if len(codes) > 10:
-            print(f"... 还有 {len(codes) - 10} 个字符")
+            print(f"... and {len(codes) - 10} more characters")
         print("-" * 40)
         
-        # 解码
+        # Decode
         decoded = huffman.decode(encoded)
-        print(f"\n解码验证: {'✓ 成功' if text == decoded else '✗ 失败'}")
+        print(f"\nDecoding verification: {'✓ Success' if text == decoded else '✗ Failed'}")
         
     except Exception as e:
-        print(f"\n错误: {e}")
+        print(f"\nError: {e}")
     
-    input("\n按回车键继续...")
+    input("\nPress Enter to continue...")
 
 
 def demo_rsa():
-    """RSA加密演示"""
-    print_header("RSA加密演示")
+    """RSA encryption demonstration"""
+    print_header("RSA Encryption Demonstration")
     
     try:
         from rsa_crypto import RSA
         
-        print("\n初始化RSA系统 (512位密钥)...")
+        print("\nInitializing RSA system (512-bit key)...")
         rsa = RSA(key_size=512)
         public_key, private_key = rsa.generate_keys()
         
-        print(f"\n公钥 (e, n):")
+        print(f"\nPublic key (e, n):")
         print(f"  e = {public_key[0]}")
-        print(f"  n的位数 = {public_key[1].bit_length()} 位")
+        print(f"  n bit length = {public_key[1].bit_length()} bits")
         
-        # 测试消息
-        message = "Hello, RSA!"
-        print(f"\n原始消息: {message}")
+        # Get user input
+        print("\nPlease enter text to encrypt (supports Chinese and English):")
+        message = input("> ").strip()
         
-        # 加密
+        if not message:
+            message = "Hello, RSA! 你好，RSA加密！"
+            print(f"Using default text: {message}")
+        
+        print(f"\nOriginal message: {message}")
+        
+        # Encrypt
         encrypted_blocks = RSA.encrypt_string(message, public_key)
-        print(f"加密后: {len(encrypted_blocks)} 个密文块")
+        print(f"Encrypted: {len(encrypted_blocks)} ciphertext blocks")
         
-        # 解密
+        # Decrypt
         decrypted = RSA.decrypt_string(encrypted_blocks, private_key)
-        print(f"解密后: {decrypted}")
+        print(f"Decrypted: {decrypted}")
         
-        print(f"\n加密解密验证: {'✓ 成功' if message == decrypted else '✗ 失败'}")
+        print(f"\nEncryption-Decryption verification: {'✓ Success' if message == decrypted else '✗ Failed'}")
         
     except Exception as e:
-        print(f"\n错误: {e}")
+        print(f"\nError: {e}")
     
-    input("\n按回车键继续...")
+    input("\nPress Enter to continue...")
 
 
 def demo_secure_communication():
-    """安全通信系统演示"""
-    print_header("安全通信系统演示")
+    """Secure communication system demonstration"""
+    print_header("Secure Communication System Demonstration")
     
     try:
         from secure_communication import CommunicationParty
         
-        print("\n初始化通信系统...")
+        print("\nInitializing communication system...")
         alice = CommunicationParty("Alice", key_size=512)
         bob = CommunicationParty("Bob", key_size=512)
         
-        # 交换公钥
-        print("\n" + "="*80)
-        print("交换公钥")
-        print("="*80)
+        # Exchange public keys
+        print("Public Key Exchange")
         alice_public = alice.get_public_key()
         bob_public = bob.get_public_key()
-        print("[Alice] 公钥已共享")
-        print("[Bob] 公钥已共享")
+        print("[Alice] Public key shared")
+        print("[Bob] Public key shared")
         
-        # 发送消息
-        message = "Hello Bob! This is a secret message that will be compressed and encrypted."
+        # Get user input
+        print("\nPlease enter message for Alice to send to Bob (supports Chinese and English):")
+        message = input("> ").strip()
+        
+        if not message:
+            message = "Hello Bob! This is a secret message that will be compressed and encrypted. 你好Bob！这是一条秘密消息。"
+            print(f"Using default message: {message}")
+        
         transmission = alice.send_to(message, bob_public)
         
-        # 接收消息
+        # Receive message
         received = bob.receive_from(transmission)
         
-        # 验证
-        print("\n" + "="*80)
-        print("验证")
-        print("="*80)
-        print(f"消息完整性: {'✓ 成功' if message == received else '✗ 失败'}")
+        # Verify
+        print("Verification")
+        print(f"Message integrity: {'✓ Success' if message == received else '✗ Failed'}")
         
     except Exception as e:
-        print(f"\n错误: {e}")
+        print(f"\nError: {e}")
     
-    input("\n按回车键继续...")
+    input("\nPress Enter to continue...")
 
 
 def demo_mitm_attack():
-    """中间人攻击演示"""
-    print_header("中间人攻击演示")
+    """Man-in-the-middle attack demonstration"""
+    print_header("Man-in-the-Middle Attack Demonstration")
     
     try:
         from mitm_attack import demo_failed_mitm_attack, demo_successful_mitm_attack, demo_prevention
         
-        print("\n将演示两个场景:")
-        print("1. 失败的中间人攻击")
-        print("2. 成功的中间人攻击")
+        print("\nWill demonstrate two scenarios:")
+        print("1. Failed man-in-the-middle attack")
+        print("2. Successful man-in-the-middle attack")
         
-        input("\n按回车键开始演示...")
+        input("\nPress Enter to start demonstration...")
         
-        # 场景1
+        # Scenario 1
         demo_failed_mitm_attack()
         
-        input("\n按回车键继续下一个场景...")
+        input("\nPress Enter to continue to next scenario...")
         
-        # 场景2
+        # Scenario 2
         demo_successful_mitm_attack()
         
-        # 防御方法
+        # Prevention methods
         demo_prevention()
         
     except Exception as e:
-        print(f"\n错误: {e}")
+        print(f"\nError: {e}")
     
-    input("\n按回车键继续...")
+    input("\nPress Enter to continue...")
 
 
 def demo_timing_attack():
-    """时间攻击演示"""
-    print_header("时间攻击演示")
+    """Timing attack demonstration"""
+    print_header("Timing Attack Demonstration")
     
     try:
         from timing_attack import (demo_timing_attack_basics,
@@ -201,75 +207,72 @@ def demo_timing_attack():
                                    demo_timing_attack_comparison,
                                    demo_timing_attack_prevention)
         
-        print("\n将演示:")
-        print("1. 时间攻击基本原理")
-        print("2. 对易受攻击实现的攻击")
-        print("3. 安全实现与易受攻击实现的比较")
-        print("4. 防御方法")
+        print("\nWill demonstrate:")
+        print("1. Basic timing attack principles")
+        print("2. Attack on vulnerable implementation")
+        print("3. Comparison of secure vs vulnerable implementation")
+        print("4. Defense methods")
         
-        input("\n按回车键开始演示...")
+        input("\nPress Enter to start demonstration...")
         
-        # 演示1: 原理
+        # Demo 1: Principles
         demo_timing_attack_basics()
         
-        input("\n按回车键继续...")
+        input("\nPress Enter to continue...")
         
-        # 演示2: 攻击
+        # Demo 2: Attack
         demo_timing_attack_vulnerable()
         
-        input("\n按回车键继续...")
+        input("\nPress Enter to continue...")
         
-        # 演示3: 比较
+        # Demo 3: Comparison
         demo_timing_attack_comparison()
         
-        # 演示4: 防御
+        # Demo 4: Defense
         demo_timing_attack_prevention()
         
     except Exception as e:
-        print(f"\n错误: {e}")
+        print(f"\nError: {e}")
     
-    input("\n按回车键继续...")
+    input("\nPress Enter to continue...")
 
 
 def demo_all():
-    """运行所有演示"""
-    print_header("完整演示")
-    print("\n将按顺序运行所有演示模块...")
+    """Run all demonstrations"""
+    print_header("Complete Demonstration")
+    print("\nWill run all demonstration modules in sequence...")
     
     demos = [
-        ("哈夫曼编码", demo_huffman),
-        ("RSA加密", demo_rsa),
-        ("安全通信系统", demo_secure_communication),
-        ("中间人攻击", demo_mitm_attack),
-        ("时间攻击", demo_timing_attack)
+        ("Huffman Coding", demo_huffman),
+        ("RSA Encryption", demo_rsa),
+        ("Secure Communication System", demo_secure_communication),
+        ("Man-in-the-Middle Attack", demo_mitm_attack),
+        ("Timing Attack", demo_timing_attack)
     ]
     
     for i, (name, func) in enumerate(demos, 1):
-        print(f"\n{'='*80}")
-        print(f"第 {i}/{len(demos)} 部分: {name}")
-        print(f"{'='*80}")
+        print(f"Part {i}/{len(demos)}: {name}")
         
         try:
             func()
         except KeyboardInterrupt:
-            print("\n\n演示已中断")
+            print("\n\nDemonstration interrupted")
             return
         except Exception as e:
-            print(f"\n错误: {e}")
-            input("\n按回车键继续...")
+            print(f"\nError: {e}")
+            input("\nPress Enter to continue...")
     
-    print_header("所有演示完成")
+    print_header("All Demonstrations Completed")
 
 
 def main():
-    """主函数"""
     while True:
         try:
             print_menu()
-            choice = input("请输入选项 (0-6): ").strip()
+            choice = input("Please enter your choice (0-6): ").strip()
             
             if choice == "0":
-                print("\n感谢使用！再见！")
+                print("\nThank you for using! Goodbye!")
                 break
             elif choice == "1":
                 demo_huffman()
@@ -284,15 +287,15 @@ def main():
             elif choice == "6":
                 demo_all()
             else:
-                print("\n无效的选项，请重新选择。")
+                print("\nInvalid choice, please try again.")
                 time.sleep(1)
         
         except KeyboardInterrupt:
-            print("\n\n程序已中断。再见！")
+            print("\n\nProgram interrupted. Goodbye!")
             break
         except Exception as e:
-            print(f"\n发生错误: {e}")
-            input("\n按回车键继续...")
+            print(f"\nError occurred: {e}")
+            input("\nPress Enter to continue...")
 
 
 if __name__ == "__main__":
