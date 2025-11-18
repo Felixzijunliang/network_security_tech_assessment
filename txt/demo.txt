@@ -1,0 +1,176 @@
+def print_section(title):
+    print(f"  {title}")
+    
+def demo_quick():
+    print("Network Security Technology Project - 5-Minute Quick Demo")
+    
+    
+    # Demo 1: Huffman coding
+    print_section("1. Huffman Coding Demonstration")
+    try:
+        from huffman import HuffmanCoding
+        
+        huffman = HuffmanCoding()
+        text = "hello world! network security technology"
+        print(f"\nOriginal text: {text}")
+        print(f"Original size: {len(text)} characters ({len(text.encode('utf-8')) * 8} bits)")
+        
+        encoded, codes = huffman.encode(text)
+        print(f"Compressed to: {len(encoded)} bits")
+        print(f"Compression ratio: {huffman.get_compression_ratio(text, encoded):.1f}%")
+        
+        decoded = huffman.decode(encoded)
+        print(f"Decoding verification: {'✓ Success' if text == decoded else '✗ Failed'}")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+    
+    # Demo 2: RSA encryption
+    print_section("2. RSA Encryption Demonstration")
+    try:
+        from rsa_crypto import RSA
+        
+        print("\nGenerating RSA keys (256-bit, for quick demo)...")
+        rsa = RSA(key_size=256)
+        public_key, private_key = rsa.generate_keys()
+        
+        message = "Secret information"
+        print(f"\nOriginal message: {message}")
+        
+        encrypted = RSA.encrypt_string(message, public_key)
+        print(f"Encryption complete: {len(encrypted)} ciphertext blocks")
+        
+        decrypted = RSA.decrypt_string(encrypted, private_key)
+        print(f"Decryption result: {decrypted}")
+        print(f"Verification: {'✓ Success' if message == decrypted else '✗ Failed'}")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+    
+    # Demo 3: Secure communication
+    print_section("3. Secure Communication Demonstration")
+    try:
+        from secure_communication import SecureCommunication
+        
+        print("\nInitializing Alice and Bob's communication")
+        alice_comm = SecureCommunication(rsa_key_size=256)
+        bob_comm = SecureCommunication(rsa_key_size=256)
+        
+        alice_comm.setup_keys()
+        bob_comm.setup_keys()
+        
+        alice_public = alice_comm.get_public_key()
+        bob_public = bob_comm.get_public_key()
+        
+        message = "This is a secret message that will be compressed and encrypted"
+        print(f"\n[Alice] Sending message: {message}")
+        
+        # Send
+        transmission = alice_comm.send_message(message, bob_public)
+        
+        # Receive
+        print("\n[Bob] Receiving and decrypting message...")
+        received = bob_comm.receive_message(transmission)
+        
+        print(f"\n[Bob] Received message: {received}")
+        print(f"Integrity verification: {'✓ Success' if message == received else '✗ Failed'}")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+    
+    # Demo 4: Man-in-the-middle attack
+    print_section("4. Man-in-the-Middle Attack Demonstration")
+    try:
+        from secure_communication import CommunicationParty
+        from mitm_attack import ManInTheMiddle
+        
+        print("\nScenario: Attacker Mallory hijacked Alice and Bob's key exchange")
+        
+        alice = CommunicationParty("Alice", key_size=256)
+        bob = CommunicationParty("Bob", key_size=256)
+        mallory = ManInTheMiddle("Mallory")
+        
+        alice_public = alice.get_public_key()
+        bob_public = bob.get_public_key()
+        mallory_public = mallory.get_public_key()
+        
+        mallory.intercept_key_exchange(alice_public, bob_public)
+        
+        message = "Transfer amount: $1000"
+        print(f"\n[Alice] Original message: {message}")
+        
+        transmission = alice.send_to(message, mallory_public)
+        
+        modified = mallory.intercept_decrypt_modify_encrypt(
+            transmission, "Alice", "Bob",
+            alice_public, bob_public
+        )
+        
+        # Bob receives tampered message
+        received = bob.receive_from(modified)
+        
+        print(f"\n[Bob] Received message: {received}")
+        print(f"Message has been tampered!")
+        print(f"Defense method: Use digital certificates to verify public key authenticity")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+    
+    # Demo 5: Timing attack
+    print_section("5. Timing Attack Demonstration")
+    try:
+        from timing_attack import TimingAttack
+        from rsa_crypto import RSA
+        import statistics
+        
+        print("\nComparing vulnerable and secure RSA implementations...")
+        
+        rsa = RSA(key_size=256)
+        public_key, private_key = rsa.generate_keys()
+        
+        # Generate test data
+        message = 12345
+        ciphertext = RSA.encrypt(message, public_key)
+        
+        # Measure vulnerable version
+        print("\nMeasuring vulnerable implementation...")
+        v_times = TimingAttack.measure_decryption_time(
+            ciphertext, private_key, use_vulnerable=True, trials=20
+        )
+        v_avg = statistics.mean(v_times) * 1e6
+        v_std = statistics.stdev(v_times) * 1e6
+        
+        # Measure secure version
+        print("Measuring secure implementation...")
+        s_times = TimingAttack.measure_decryption_time(
+            ciphertext, private_key, use_vulnerable=False, trials=20
+        )
+        s_avg = statistics.mean(s_times) * 1e6
+        s_std = statistics.stdev(s_times) * 1e6
+        
+        print(f"\nComparison results:")
+        print(f"Vulnerable version: {v_avg:.2f} ± {v_std:.2f} microseconds")
+        print(f"Secure version:     {s_avg:.2f} ± {s_std:.2f} microseconds")
+        
+        v_cv = (v_std / v_avg) * 100
+        s_cv = (s_std / s_avg) * 100
+        
+        print(f"\nCoefficient of variation:")
+        print(f"Vulnerable version: {v_cv:.2f}%")
+        print(f"Secure version:     {s_cv:.2f}%")
+        
+        if s_cv < v_cv:
+            improvement = ((v_cv - s_cv) / v_cv) * 100
+            print(f"\n✓ Secure implementation reduced time variation by {improvement:.1f}%")
+            print(f"  Harder to infer key information through timing attacks")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+    
+    
+    print("Demo Complete")
+
+
+
+if __name__ == "__main__":
+    demo_quick()

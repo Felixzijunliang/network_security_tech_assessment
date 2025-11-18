@@ -9,69 +9,32 @@ def print_header(title: str):
 def print_menu():
     print_header("Network Security Technology Demonstration System")
     print("""
-Select demonstration content:
+Select what you want to demonstrate:
 
-=== Basic Encryption ===
-1. Huffman Coding Demonstration
-   - Data compression principles
+1. Huffman Coding demonstration
+   - Demonstrate the principles of data compression
    - Encoding and decoding process
 
-2. RSA Encryption Demonstration
+2. RSA encryption demonstration
    - Key generation
-   - Encryption and decryption process
+   - Encryption and decryption processes
 
-3. Secure Communication System Demonstration
+3. Secure communication system demonstration
    - Combining Huffman coding and RSA encryption
-   - Complete end-to-end encrypted communication
+   - Full end-to-end encrypted communication
 
-=== Diffie-Hellman ===
-4. Diffie-Hellman Key Exchange Demonstration
-   - Basic key exchange process
-   - Security explanation
-
-5. DH Man-in-the-Middle Attack Demonstration
-   - Successful attack scenario
-   - Failed attack scenario (with defense)
+4. Man-in-the-middle attack demonstration
+   - Scenario 1: Failed attack (correct key exchange)
+   - Scenario 2: Successful attack (attacker controls key exchange)
    - Defense methods
 
-6. DH Small Subgroup Attack Demonstration
-   - Attack principles and implementation
-   - Security comparison of different parameters
+5. Timing attack demonstration
+   - Timing attack principle
+   - Attacks on vulnerable implementations
+   - Security implementation comparison
    - Defense methods
 
-7. DH Defense Measures Demonstration
-   - Authenticated key exchange
-   - Secure parameter usage
-   - Defense effectiveness comparison
-
-=== RSA Attacks and Defenses ===
-8. RSA Timing Attack Demonstration
-   - Attack principles
-   - Vulnerable implementation
-   - Secure implementation comparison
-
-9. RSA Small Exponent Attack Demonstration
-   - Small e attack
-   - Håstad broadcast attack
-   - Defense methods
-
-10. RSA OAEP Padding Defense Demonstration
-    - OAEP principles
-    - Defense effectiveness
-    - Performance comparison
-
-=== RSA MITM Attack ===
-11. RSA Man-in-the-Middle Attack Demonstration
-    - Scenario 1: Failed attack (correct key exchange)
-    - Scenario 2: Successful attack (attacker controls key exchange)
-
-=== Comprehensive ===
-12. Evaluation Metrics Demonstration
-    - Attack method comparison
-    - Defense method comparison
-    - Visualization charts
-
-13. Complete Demonstration (run all modules)
+6. Full demo (running all modules)
 
 0. Exit
 
@@ -142,7 +105,7 @@ def demo_rsa():
         message = input("> ").strip()
         
         if not message:
-            message = "Hello, RSA! This is a test message for RSA encryption!"
+            message = "Hello, RSA! 你好，RSA加密！"
             print(f"Using default text: {message}")
         
         print(f"\nOriginal message: {message}")
@@ -186,7 +149,7 @@ def demo_secure_communication():
         message = input("> ").strip()
         
         if not message:
-            message = "Hello Bob! This is a secret message that will be compressed and encrypted for secure communication."
+            message = "Hello Bob! This is a secret message that will be compressed and encrypted. 你好Bob！这是一条秘密消息。"
             print(f"Using default message: {message}")
         
         transmission = alice.send_to(message, bob_public)
@@ -274,122 +237,8 @@ def demo_timing_attack():
     input("\nPress Enter to continue...")
 
 
-def demo_diffie_hellman():
-    """Diffie-Hellman Key Exchange Demonstration"""
-    print_header("Diffie-Hellman Key Exchange Demonstration")
-    
-    try:
-        from diffie_hellman import demo_basic_dh
-        demo_basic_dh()
-    except Exception as e:
-        print(f"\nError: {e}")
-    
-    input("\nPress Enter to continue...")
-
-
-def demo_dh_mitm_attack():
-    """DH Man-in-the-Middle Attack Demonstration"""
-    print_header("DH Man-in-the-Middle Attack Demonstration")
-    
-    try:
-        from dh_mitm_attack import demo_successful_mitm_attack, demo_failed_mitm_attack
-        
-        demo_successful_mitm_attack()
-        input("\nPress Enter to continue to the next scenario...")
-        demo_failed_mitm_attack()
-    except Exception as e:
-        print(f"\nError: {e}")
-    
-    input("\nPress Enter to continue...")
-
-
-def demo_dh_small_subgroup():
-    """DH Small Subgroup Attack Demonstration"""
-    print_header("DH Small Subgroup Attack Demonstration")
-    
-    try:
-        from dh_small_subgroup_attack import demo_vulnerable_parameters, demo_safe_parameters
-        
-        demo_vulnerable_parameters()
-        input("\nPress Enter to continue...")
-        demo_safe_parameters()
-    except Exception as e:
-        print(f"\nError: {e}")
-    
-    input("\nPress Enter to continue...")
-
-
-def demo_dh_defense():
-    """DH Defense Measures Demonstration"""
-    print_header("DH Defense Measures Demonstration")
-    
-    try:
-        from dh_defense import demo_authenticated_dh, demo_secure_parameters
-        
-        demo_authenticated_dh()
-        input("\nPress Enter to continue...")
-        demo_secure_parameters()
-    except Exception as e:
-        print(f"\nError: {e}")
-    
-    input("\nPress Enter to continue...")
-
-
-def demo_rsa_small_exponent():
-    """RSA Small Exponent Attack Demonstration"""
-    print_header("RSA Small Exponent Attack Demonstration")
-    
-    try:
-        from rsa_small_exponent_attack import demo_small_e_vulnerable, demo_hastad_broadcast_attack
-        
-        demo_small_e_vulnerable()
-        input("\nPress Enter to continue...")
-        demo_hastad_broadcast_attack()
-    except Exception as e:
-        print(f"\nError: {e}")
-    
-    input("\nPress Enter to continue...")
-
-
-def demo_rsa_oaep():
-    """RSA OAEP Padding Demonstration"""
-    print_header("RSA OAEP Padding Defense Demonstration")
-    
-    try:
-        from rsa_padding_defense import demo_basic_oaep, demo_oaep_vs_no_padding
-        
-        demo_basic_oaep()
-        input("\nPress Enter to continue...")
-        demo_oaep_vs_no_padding()
-    except Exception as e:
-        print(f"\nError: {e}")
-    
-    input("\nPress Enter to continue...")
-
-
-def demo_evaluation_metrics():
-    """Evaluation Metrics Demonstration"""
-    print_header("Comprehensive Evaluation Metrics Demonstration")
-    
-    try:
-        from evaluation_metrics import (demo_dh_attack_metrics, demo_dh_defense_metrics,
-                                       demo_rsa_attack_metrics, demo_rsa_defense_metrics)
-        
-        demo_dh_attack_metrics()
-        input("\nPress Enter to continue...")
-        demo_dh_defense_metrics()
-        input("\nPress Enter to continue...")
-        demo_rsa_attack_metrics()
-        input("\nPress Enter to continue...")
-        demo_rsa_defense_metrics()
-    except Exception as e:
-        print(f"\nError: {e}")
-    
-    input("\nPress Enter to continue...")
-
-
 def demo_all():
-    """Run All Demonstrations"""
+    """Run all demonstrations"""
     print_header("Complete Demonstration")
     print("\nWill run all demonstration modules in sequence...")
     
@@ -397,19 +246,12 @@ def demo_all():
         ("Huffman Coding", demo_huffman),
         ("RSA Encryption", demo_rsa),
         ("Secure Communication System", demo_secure_communication),
-        ("Diffie-Hellman Key Exchange", demo_diffie_hellman),
-        ("DH Man-in-the-Middle Attack", demo_dh_mitm_attack),
-        ("DH Small Subgroup Attack", demo_dh_small_subgroup),
-        ("DH Defense Measures", demo_dh_defense),
-        ("RSA Timing Attack", demo_timing_attack),
-        ("RSA Small Exponent Attack", demo_rsa_small_exponent),
-        ("RSA OAEP Defense", demo_rsa_oaep),
-        ("RSA Man-in-the-Middle Attack", demo_mitm_attack),
-        ("Evaluation Metrics", demo_evaluation_metrics)
+        ("Man-in-the-Middle Attack", demo_mitm_attack),
+        ("Timing Attack", demo_timing_attack)
     ]
     
     for i, (name, func) in enumerate(demos, 1):
-        print(f"\nPart {i}/{len(demos)}: {name}")
+        print(f"Part {i}/{len(demos)}: {name}")
         
         try:
             func()
@@ -427,7 +269,7 @@ def main():
     while True:
         try:
             print_menu()
-            choice = input("Please enter your choice (0-13): ").strip()
+            choice = input("Please enter your choice (0-6): ").strip()
             
             if choice == "0":
                 print("\nThank you for using! Goodbye!")
@@ -439,24 +281,10 @@ def main():
             elif choice == "3":
                 demo_secure_communication()
             elif choice == "4":
-                demo_diffie_hellman()
-            elif choice == "5":
-                demo_dh_mitm_attack()
-            elif choice == "6":
-                demo_dh_small_subgroup()
-            elif choice == "7":
-                demo_dh_defense()
-            elif choice == "8":
-                demo_timing_attack()
-            elif choice == "9":
-                demo_rsa_small_exponent()
-            elif choice == "10":
-                demo_rsa_oaep()
-            elif choice == "11":
                 demo_mitm_attack()
-            elif choice == "12":
-                demo_evaluation_metrics()
-            elif choice == "13":
+            elif choice == "5":
+                demo_timing_attack()
+            elif choice == "6":
                 demo_all()
             else:
                 print("\nInvalid choice, please try again.")
